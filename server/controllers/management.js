@@ -16,7 +16,11 @@ export const getUserPerformance = async (req, res) => {
     const { id } = req.params;
 
     const userWithStats = await User.aggregate([
-      { $match: { _id: new mongoose.Types.ObjectId(id) } },
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(id),
+        },
+      },
       {
         $lookup: {
           from: "affiliatestats",
@@ -27,6 +31,7 @@ export const getUserPerformance = async (req, res) => {
       },
       { $unwind: "$affiliateStats" },
     ]);
+    console.log(userWithStats);
 
     const saleTransactions = await Promise.all(
       userWithStats[0].affiliateStats.affiliateSales.map((id) => {
